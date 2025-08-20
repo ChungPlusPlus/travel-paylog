@@ -113,7 +113,7 @@ function generateAliasMap() {
   const firstLetterCount = {};
   names.forEach(name => {
     const firstName = name.substring(1);
-    nameCount[firstName] = (nameCount[firstName] || 0) + 1;
+    firstNameCount[firstName] = (firstNameCount[firstName] || 0) + 1;
 
     const firstLetter = name[0];
     firstLetterCount[firstLetter] = (firstLetterCount[firstLetter] || 0) + 1;
@@ -129,8 +129,6 @@ function generateAliasMap() {
     if(firstLetterCount[name[0]] === 1) {
       aliases.push(name[0]);
     }
-    
-    aliasMap[name] = [...new Set(aliases.filter(Boolean))];
   });
   console.log("자동 생성된 별명:", aliasMap);
 }
