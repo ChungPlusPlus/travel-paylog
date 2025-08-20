@@ -60,7 +60,7 @@
   </label>
   <label>금액(<span id="currencyMark"></span>): <input type="number" id="amount"></label>
   <label>메모(선택): <textarea id="memo"></textarea></label>
-  <label>사진(지양): <input type="file" id="photo" accept="image/*"></label>
+  <!-- <label>사진: <input type="file" id="photo" accept="image/*"></label> -->
   <label>참여자(본인 포함):</label>
   <div id="participants" class="participants-grid"></div>
   <button id="addPayment">추가</button>
@@ -68,7 +68,7 @@
 
 <section id="records">
   <h2>기록</h2>
-  <button id="exportDataNoPhoto">데이터 내보내기(사진 제외)</button>
+  <button id="exportData">데이터 내보내기</button>
   <textarea id="exportOutput" readonly></textarea>
   <button id="deleteAll">전체 삭제</button>
   <div id="recordList"></div>
@@ -165,7 +165,6 @@ function renderRecords() {
     메모: ${p.memo || ''}<br>
     참여자: ${p.participants.join(', ')}<br>
     <small>${p.date ? p.date : ''}</small><br>
-    ${p.photo ? `<img src="${p.photo}" style="max-width:100px;max-height:100px;"><br>` : ''}
     <button onclick="deletePayment(${idx});event.stopPropagation();">삭제</button>`;
     div.onclick = () => openDetailModal(idx);
     list.appendChild(div);
@@ -198,7 +197,6 @@ function openDetailModal(idx) {
         <label>메모: <input id="modalMemo" style="width:100%"></label><br>
         <label>참여자(쉼표로 구분): <input id="modalParticipants" style="width:100%"></label><br>
         <label>날짜: <input id="modalDate" style="width:100%" readonly></label><br>
-        <div id="modalPhotoWrap" style="text-align:center;margin:10px 0;"></div>
         <button id="saveModalBtn" style="width:100%;margin-top:10px;">수정 저장</button>
       </div>
     `;
@@ -209,7 +207,6 @@ function openDetailModal(idx) {
   document.getElementById('modalMemo').value = p.memo || '';
   document.getElementById('modalParticipants').value = p.participants.join(', ');
   document.getElementById('modalDate').value = p.date || '';
-  document.getElementById('modalPhotoWrap').innerHTML = p.photo ? `<img src="${p.photo}" style="max-width:90vw;max-height:50vh;">` : '(사진 없음)';
 
   modal.style.display = 'flex';
 
@@ -249,7 +246,6 @@ document.getElementById('addPayment').onclick = () => {
   const participants = Array.from(document.querySelectorAll('#participants .participant-btn.selected'))
     .map(btn => btn.dataset.name)
     .filter(name => name !== "__all__");
-  const photoInput = document.getElementById('photo');
   if (!amount && participants.length === 0) {
     alert("금액과 참여자를 입력하세요");
     return;
@@ -276,29 +272,14 @@ document.getElementById('addPayment').onclick = () => {
   const now = new Date();
   const date = now.toLocaleString();
 
-  if (photoInput.files && photoInput.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const photo = e.target.result;
-      payments.push({ payer, amount, participants, memo, date, photo });
-      savePayments();
-      document.getElementById('amount').value = '';
-      document.getElementById('memo').value = '';
-      document.querySelectorAll('#participants .participant-btn').forEach(btn => btn.classList.remove('selected'));
-      photoInput.value = '';
-      alert("추가됨");
-      renderRecords();
-    };
-    reader.readAsDataURL(photoInput.files[0]);
-  } else {
-    payments.push({ payer, amount, participants, memo, date });
-    savePayments();
-    document.getElementById('amount').value = '';
-    document.getElementById('memo').value = '';
-    document.querySelectorAll('#participants .participant-btn').forEach(btn => btn.classList.remove('selected'));
-    alert("추가됨");
-    renderRecords();
-  }
+  payments.push({ payer, amount, participants, memo, date });
+  savePayments();
+  document.getElementById('amount').value = '';
+  document.getElementById('memo').value = '';
+  document.querySelectorAll('#participants .participant-btn').forEach(btn => btn.classList.remove('selected'));
+  alert("추가됨");
+  renderRecords();
+
   localStorage.setItem('lastPayer', payer);
 };
 
@@ -332,9 +313,8 @@ function fallbackCopy(text) {
 }
 
 // 데이터 내보내기(사진 제외)
-document.getElementById('exportDataNoPhoto').onclick = () => {
-  const dataNoPhoto = payments.map(({photo, ...rest}) => rest);
-  const json = JSON.stringify(dataNoPhoto);
+document.getElementById('exportData').onclick = () => {
+  const json = JSON.stringify(payments);
   document.getElementById('exportOutput').value = json;
   copyToClipboard(json);
 };
