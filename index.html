@@ -107,18 +107,26 @@ function initializeFromURL() {
 // 이름에서 별명 자동 생성
 function generateAliasMap() {
   const firstNames = names.map(name => name.substring(1));
-  const uniqueFirstNames = new Set(firstNames);
   const firstLetters = names.map(name => name[0]);
-  const uniqueFirstLetters = new Set(firstLetters);
+
+  const firstNameCount = {};
+  const firstLetterCount = {};
+  names.forEach(name => {
+    const firstName = name.substring(1);
+    nameCount[firstName] = (nameCount[firstName] || 0) + 1;
+
+    const firstLetter = name[0];
+    firstLetterCount[firstLetter] = (firstLetterCount[firstLetter] || 0) + 1;
+  });
 
   names.forEach(name => {
-    const aliases = [];
-    
     // 이름을 별명으로 추가
-    aliases.push(name.substring(1));
-    
-    // 성씨가 겹치지 않으면 성씨를 별명으로 추가
-    if (uniqueFirstLetters.size === names.length) {
+    if(firstNameCount[name.substring(1)] === 1) {
+      aliases.push(name.substring(1));
+    }
+
+    // 성씨를 별명으로 추가
+    if(firstLetterCount[name[0]] === 1) {
       aliases.push(name[0]);
     }
     

@@ -32,6 +32,12 @@
 4. **정산하기**  
    - 여러 명의 JSON 데이터를 한 줄에 하나씩 붙여넣고 "정산 계산"을 누르면, 전체 결제 내역과 정산 결과를 확인할 수 있습니다.
 
+## 사용방법(iOS)
+deploy 브랜치는 어떤 환경에서도 웹앱을 사용하고자 배포한 버전입니다
+   - https://chungplusplus.github.io/travel-paylog/?names=AAA,BBB,CCC,DDD,EEE,FFF,GGG,KKK 로 접속합니다.
+   - URL의 names를 수정해서 이름을 적절하게 변경할 수 있습니다
+   - 별명은 names를 기반으로 자동으로 생성됩니다.
+
 ## 기타 안내
 
 - **데이터 저장**: 입력한 데이터는 브라우저의 localStorage에 저장됩니다. 브라우저 캐시를 지우면 데이터가 삭제될 수 있습니다.
