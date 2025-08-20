@@ -91,6 +91,16 @@
 
 <script>
 const names = ["A", "B", "C", "D", "E", "F", "G", "H"]; // 이름 입력(8명이 최적)
+const aliasMap = {
+  "A": ["a", "에이"],
+  "B": ["b", "비"],
+  "C": ["c", "씨"],
+  "D": ["d", "디"],
+  "E": ["e", "이"],
+  "F": ["f", "에프"],
+  "G": ["g", "지"],
+  "H": ["h", "에이치"]
+}; // 별명 목록
 const CURRENCY = "￥"; // 통화 단위 상수
 let payments = JSON.parse(localStorage.getItem('payments') || '[]'); // 브라우저 localStorage 사용해서 저장
 
@@ -171,6 +181,20 @@ function renderRecords() {
   });
 }
 
+function normalizeName(input) {
+  if (names.includes(input)) {
+    return input;
+  }
+
+  for (const [realName, aliases] of Object.entries(aliasMap)) {
+    if (aliases.includes(input)) {
+      return realName;
+    }
+  }
+
+  return null;
+}
+
 // 자세히 보기(결제자/참가자/금액/메모 수정 가능)
 function openDetailModal(idx) {
   const p = payments[idx];
@@ -215,13 +239,19 @@ function openDetailModal(idx) {
   };
 
   document.getElementById('saveModalBtn').onclick = function() {
-    p.payer = document.getElementById('modalPayer').value;
+    const payerInput = document.getElementById('modalPayer').value;
+    p.payer = normalizeName(payerInput);
+    if(!p.payer) {
+      alert("결제자 이름이 잘못되었습니다.");
+      return;
+    }
     p.amount = parseFloat(document.getElementById('modalAmount').value) || 0;
     p.memo = document.getElementById('modalMemo').value;
     // 참여자 입력값을 배열로 변환
     const newParticipants = document.getElementById('modalParticipants').value
       .split(',')
       .map(s => s.trim())
+      .map(s => normalizeName(s))
       .filter(Boolean);
 
     // 참여자 유효성 검사
@@ -231,7 +261,6 @@ function openDetailModal(idx) {
       return;
     }
     p.participants = newParticipants;
-    // 날짜, 사진은 그대로
     savePayments();
     renderRecords();
     modal.style.display = 'none';
