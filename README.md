@@ -36,7 +36,6 @@
 deploy 브랜치는 어떤 환경에서도 웹앱을 사용하고자 배포한 버전입니다
    - https://chungplusplus.github.io/travel-paylog/?names=AAA,BBB,CCC,DDD,EEE,FFF,GGG,KKK 로 접속합니다.
    - URL의 names를 수정해서 이름을 적절하게 변경할 수 있습니다
-   - 별명은 names를 기반으로 자동으로 생성됩니다.
 
 ## 기타 안내
 
