@@ -60,7 +60,7 @@
   </label>
   <label>금액(<span id="currencyMark"></span>): <input type="number" id="amount"></label>
   <label>메모(선택): <textarea id="memo"></textarea></label>
-  <label>사진(선택): <input type="file" id="photo" accept="image/*"></label>
+  <label>사진(지양): <input type="file" id="photo" accept="image/*"></label>
   <label>참여자(본인 포함):</label>
   <div id="participants" class="participants-grid"></div>
   <button id="addPayment">추가</button>
@@ -385,10 +385,41 @@ document.getElementById('calculateSettle').onclick = () => {
     });
     document.getElementById('allPaymentsOutput').value = allText;
 
+    // --- 각자 소비 내역(메모 포함) ---
+    let spendText = '';
+    names.forEach(n => {
+      let spend = 0;
+      let details = [];
+      allPayments.forEach(p => {
+        if (p.participants.includes(n)) {
+          const share = p.amount / p.participants.length;
+          spend += share;
+          details.push(
+            `${p.date ? parseInt(p.date.split(' ')[2], 10) + '일, ' : ''}${share.toFixed(2)}${CURRENCY}` +
+            (p.memo ? `, ${p.memo}` : '')
+          );
+        }
+      });
+      spendText += `\n${n}: ${spend.toFixed(2)}${CURRENCY}\n`;
+      if (details.length > 0) {
+        spendText += details.map(d => `   ${d}`).join('\n') + '\n';
+      }
+    });
+
+    let prev = document.getElementById('spendSummary');
+    if (prev) prev.remove();
+
+    const spendDiv = document.createElement('div');
+    spendDiv.id = 'spendSummary';
+    spendDiv.innerHTML = `<h4>개별 소비내역</h4><pre style="background:#f8f8f8;padding:8px;">${spendText}</pre>`;
+    document.getElementById('allPaymentsOutput').parentNode.appendChild(spendDiv);
+
   } catch (e) {
     alert("각 줄에 올바른 JSON 배열을 붙여넣어야 합니다.\n\n" + e.message);
     document.getElementById('settleResult').textContent = '';
     document.getElementById('allPaymentsOutput').value = '';
+    let prev = document.getElementById('spendSummary');
+    if (prev) prev.remove();
   }
 };
 
