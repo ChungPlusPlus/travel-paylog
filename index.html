@@ -90,19 +90,42 @@
 </section>
 
 <script>
-const names = ["A", "B", "C", "D", "E", "F", "G", "H"]; // 이름 입력(8명이 최적)
-const aliasMap = {
-  "A": ["a", "에이"],
-  "B": ["b", "비"],
-  "C": ["c", "씨"],
-  "D": ["d", "디"],
-  "E": ["e", "이"],
-  "F": ["f", "에프"],
-  "G": ["g", "지"],
-  "H": ["h", "에이치"]
-}; // 별명 목록
+let names = ["A", "B", "C", "D", "E", "F", "G", "H"]; // 이름 입력(8명이 최적)
+let aliasMap = {};
 const CURRENCY = "￥"; // 통화 단위 상수
 let payments = JSON.parse(localStorage.getItem('payments') || '[]'); // 브라우저 localStorage 사용해서 저장
+
+function initializeFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const namesString = params.get('names');
+  if (namesString) {
+    names = namesString.split(',').map(name => name.trim());
+    generateAliasMap();
+  }
+}
+
+// 이름에서 별명 자동 생성
+function generateAliasMap() {
+  const firstNames = names.map(name => name.substring(1));
+  const uniqueFirstNames = new Set(firstNames);
+  const firstLetters = names.map(name => name[0]);
+  const uniqueFirstLetters = new Set(firstLetters);
+
+  names.forEach(name => {
+    const aliases = [];
+    
+    // 이름을 별명으로 추가
+    aliases.push(name.substring(1));
+    
+    // 성씨가 겹치지 않으면 성씨를 별명으로 추가
+    if (uniqueFirstLetters.size === names.length) {
+      aliases.push(name[0]);
+    }
+    
+    aliasMap[name] = [...new Set(aliases.filter(Boolean))];
+  });
+  console.log("자동 생성된 별명:", aliasMap);
+}
 
 function savePayments() {
   localStorage.setItem('payments', JSON.stringify(payments));
@@ -465,6 +488,7 @@ document.getElementById('addSingleJson').onclick = () => {
 // 페이지 로드시 실행
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('currencyMark').textContent = CURRENCY;
+  initializeFromURL();
   renderSelectOptions();
   renderRecords();
 });
