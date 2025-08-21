@@ -1,0 +1,86 @@
+/* 여행 정산 앱 스타일 */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav {
+  display: flex;
+  background: #2196f3;
+  color: white;
+}
+
+nav button {
+  flex: 1;
+  padding: 10px;
+  background: #2196f3;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+nav button.active {
+  background: #1976d2;
+}
+
+section {
+  display: none;
+  padding: 15px;
+}
+
+section.active {
+  display: block;
+}
+
+input,
+textarea,
+select {
+  margin: 5px 0;
+  padding: 5px;
+  width: 100%;
+}
+
+button {
+  padding: 5px 10px;
+  margin-top: 5px;
+}
+
+.record {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.participants-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.participant-btn {
+  padding: 12px 0;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #1976d2;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.participant-btn.selected {
+  background: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+}
+
+#addPayment,
+#calculateSettle {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
