@@ -431,6 +431,14 @@ document.getElementById('calculateSettle').onclick = () => {
   }
 };
 
+function deletePayment(idx) {
+  if (confirm("정말로 이 결제 기록을 삭제할까요?")) {
+    payments.splice(idx, 1);
+    savePayments();
+    renderRecords();
+  }
+}
+
 // 결제 기록 모두 삭제
 document.getElementById('deleteAll').onclick = () => {
   if (confirm("정말로 모든 기록을 삭제할까요?")) {
